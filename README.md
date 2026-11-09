@@ -49,6 +49,37 @@ Then open Codex CLI and run:
 
 Select `nocturnalzone`.
 
+## Screenshots
+
+`assets/screenshot-app.png` is captured from the Codex app:
+
+```bash
+scripts/screenshot-app.sh
+```
+
+The app theme must already be applied in the Codex app Appearance settings. The script sends a
+prompt that produces a normal answer with one paragraph, three bullets, and a Markdown link, so
+the accent color is visible, then captures the largest Codex window. Plain body text, an empty
+new chat, the unfinished input field, and the `@` candidate menu are not valid subjects because
+they do not show the accent color.
+
+`assets/screenshot-cli.png` is captured from the Codex CLI `/theme` live preview:
+
+```bash
+scripts/screenshot-cli.sh
+```
+
+`nocturnalzone.tmTheme` must be installed for Codex CLI and `nocturnalzone` must already be
+selected in its `/theme` screen. The script opens a new WezTerm window, starts Codex CLI there,
+opens `/theme`, and captures only that new window. The capture subject is the live preview:
+`Select Syntax Theme` and `nocturnalzone (custom) (current)` on the left, a Rust-style preview
+diff on the right. A `git diff --no-index --color=always` card is not a substitute, and
+`codex --no-alt-screen` is not used because it changes the drawing path.
+
+Both scripts accept `--output-dir DIR` to capture outside `assets/`. macOS must allow the
+terminal to control the computer (**System Settings > Privacy & Security > Accessibility**) so
+the window geometry can be read.
+
 ## Workspace Install Script
 
 In the NocturnalZone workspace, the shared installer also copies this theme:
