@@ -1,6 +1,6 @@
 -- Codexアプリを前面化し、新規チャットへプロンプトを貼り付けて送信する。
 -- 使い方: osascript codex-send-prompt.applescript <prompt>
--- クリップボードの内容はプロンプトで上書きされる。
+-- クリップボードは一時的にプロンプトで上書きし、成功・失敗のどちらでも元の内容へ戻す。
 on run argv
 	set promptText to item 1 of argv
 
@@ -23,22 +23,31 @@ on run argv
 	end try
 	set the clipboard to promptText
 
-	tell application "System Events"
-		key code 53
-		delay 0.2
-		keystroke "n" using {command down}
-		delay 1
-		keystroke "v" using {command down}
-		delay 0.3
-		key code 36
-	end tell
+	try
+		tell application "System Events"
+			key code 53
+			delay 0.2
+			keystroke "n" using {command down}
+			delay 1
+			keystroke "v" using {command down}
+			delay 0.3
+			key code 36
+		end tell
+		delay 0.5
+	on error errorMessage number errorNumber
+		-- キー入力の途中で失敗しても、利用者のクリップボードを戻してから失敗を返す。
+		my restoreClipboard(savedClipboard)
+		error errorMessage number errorNumber
+	end try
 
-	delay 0.5
+	my restoreClipboard(savedClipboard)
+	return ""
+end run
+
+on restoreClipboard(savedClipboard)
 	if savedClipboard is not missing value then
 		try
 			set the clipboard to savedClipboard
 		end try
 	end if
-
-	return ""
-end run
+end restoreClipboard
